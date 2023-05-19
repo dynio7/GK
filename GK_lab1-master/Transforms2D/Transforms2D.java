@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.imageio.ImageIO;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -18,16 +19,58 @@ public class Transforms2D extends JPanel {
 
             // TODO Apply transforms here, depending on the value of whichTransform!
 
-            g2.drawImage(pic, -200, -150, null); // Draw image with center at (0,0).
+            switch(whichTransform){
+                case 1:
+                    g2.scale(0.5, 0.5);
+                    break;
+                case 2:
+                    g2.scale(2, 2);
+                    break;
+                case 3:
+                    g2.scale(2, 0.5);
+                    break;
+                case 4:
+                    g2.rotate(1, 20, 20);
+                    break;
+                case 5:
+                    g2.rotate(0.33, 20, 20); g2.scale(0.3, 0.3);
+                    break;
+                case 6:
+                    g2.rotate(-0.33, 10, 40); g2.scale(1.2, 0.75);
+                    break;
+                case 7:
+                    g2.rotate(Math.PI, 10, 40); g2.scale(1, 1);
+                    break;
+                case 8:
+                    g2.scale(2, 0.75);
+                    break;
+                case 9:
+                    g2.scale(0.75, 2);
+                    break;
+            }
+
+            double polygonRadius = 150;
+            int polygonNumberOfSpikes = 16;
+            int[] spikesXCoords = new int[17];
+            int[] spikesYCoords = new int[17];
+
+            for (int spike = 0; spike < polygonNumberOfSpikes; spike++) {
+                spikesXCoords[spike] = (int) Math.round(polygonRadius * Math.cos(2 * Math.PI * spike / 16));
+                spikesYCoords[spike] = (int) Math.round(polygonRadius * Math.sin(2 * Math.PI * spike / 16));
+            }
+
+            g.drawPolygon(spikesXCoords, spikesYCoords, polygonNumberOfSpikes);
+            g.setColor(Color.RED);
+            g.fillPolygon(spikesXCoords, spikesYCoords, polygonNumberOfSpikes);
+            Polygon p = new Polygon();
+            g.fillPolygon(p);
         }
     }
 
     private Display display;
-    private BufferedImage pic;
     private JComboBox<String> transformSelect;
 
     public Transforms2D() throws IOException {
-        pic = ImageIO.read(getClass().getClassLoader().getResource("shuttle.jpg"));
         display = new Display();
         display.setBackground(Color.YELLOW);
         display.setPreferredSize(new Dimension(600,600));
